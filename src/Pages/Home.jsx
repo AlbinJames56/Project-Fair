@@ -1,9 +1,24 @@
-import React from "react";
-import { Button, Col, Row } from "react-bootstrap";
+import React, { useEffect, useState } from "react";
+import {Col, Row } from "react-bootstrap";
 import titleImage from "../assets/Images/cat.gif";
 import ProjectCard from "../Components/ProjectCard";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 function Home() {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const navigate=useNavigate()
+  const handleProjectsPage=()=>{
+    if(sessionStorage.getItem("token")){
+      navigate('/project')
+    }else{
+      alert('please login')
+    }
+  }
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      setLoggedIn(true);
+    }
+  }, []);
   return (
     <div
       style={{ width: "100%", height: "170vh" }}
@@ -18,8 +33,16 @@ function Home() {
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt quis
             rerum soluta modi explicabo tenetur?Lorem ipsum dolor sit amet
             consectetur adipisicing elit. Sit, mollitia.
-          </p> 
-          <Link to="/login" className="btn btn-warning">Start To Explore</Link>
+          </p>
+          {loggedIn ? (
+            <Link to="/dashboard" className="btn btn-warning">
+              Manage Projects
+            </Link>
+          ) : (
+            <Link to="/login" className="btn btn-warning">
+              Start To Explore
+            </Link>
+          )}
         </Col>
         <Col sm={12} md={6} className="ps-5">
           <img width={"500px"} src={titleImage} alt="" />
@@ -43,12 +66,10 @@ function Home() {
         </marquee>
       </div>
       <div className="text-center mt-5">
-        <Link
-          to={"/projects"}
-          style={{ textDecoration: "none", color: "white" }}
+        <button  className="btn btn-success" onClick={handleProjectsPage}
         >
           View More Projects
-        </Link>
+        </button>
       </div>
     </div>
   );

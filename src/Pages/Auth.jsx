@@ -1,8 +1,63 @@
-import React from "react";
+import React, { useState } from "react";
 import { Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginAPI, registerAPI } from "../services/allAPI";
 function Auth({ register }) {
   const isRegisterForm = register ? true : false;
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  console.log(userData);
+  // login
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    const { email, password } = userData;
+    if (!email || !password) {
+      alert("Please fill all fileds");
+    } else {
+      try {
+        const result = await loginAPI({ email, password });
+        console.log(result);
+        if (result.status === 200) {
+          sessionStorage.setItem("username", result.data.existingUser.username);
+          sessionStorage.setItem("token", result.data.token);
+          navigate("/");
+          setUserData({ email: "", password: "" });
+        } else {
+          alert(result.response.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
+  // register
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    const { username, email, password } = userData;
+    if (!username || !email || !password) {
+      alert("Please fill all fileds");
+    } else {
+      // api calling
+      try {
+        const result = await registerAPI(userData);
+        console.log(result);
+
+        if (result.status === 200) {
+          alert(`${result.data.username} has successfully registered`);
+          navigate("/login");
+          setUserData({ username: "", email: "", password: "" });
+        } else {
+          alert(result.response.data);
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  };
   return (
     <div className="bg-info p-5" style={{ height: "100vh" }}>
       <div className="d-flex justify-content-center align-items-center p-5">
@@ -48,6 +103,10 @@ function Auth({ register }) {
                     <Form.Control
                       type="text"
                       placeholder="Enter Your Username"
+                      onChange={(e) =>
+                        setUserData({ ...userData, username: e.target.value })
+                      }
+                      value={userData.username}
                     />
                   </Form.Group>
                 )}
@@ -55,7 +114,14 @@ function Auth({ register }) {
                   className="mb-3"
                   controlId="exampleForm.ControlEmail"
                 >
-                  <Form.Control type="email" placeholder="name@example.com" />
+                  <Form.Control
+                    type="email"
+                    placeholder="name@example.com"
+                    onChange={(e) =>
+                      setUserData({ ...userData, email: e.target.value })
+                    }
+                    value={userData.email}
+                  />
                 </Form.Group>
                 <Form.Group
                   className="mb-3"
@@ -64,12 +130,21 @@ function Auth({ register }) {
                   <Form.Control
                     type="Password"
                     placeholder="Enter Your Password"
+                    onChange={(e) =>
+                      setUserData({ ...userData, password: e.target.value })
+                    }
+                    value={userData.password}
                   />
                 </Form.Group>
               </Form>
               {isRegisterForm ? (
                 <div>
-                  <button className="btn btn-dark text-light my-2">Register</button>
+                  <button
+                    className="btn btn-dark text-light my-2"
+                    onClick={handleRegister}
+                  >
+                    Register
+                  </button>
                   <p className="text-light">
                     Already have a Account?Click here..
                     <Link to={"/login"} style={{ textDecoration: "none" }}>
@@ -79,7 +154,12 @@ function Auth({ register }) {
                 </div>
               ) : (
                 <div>
-                  <button className="btn btn-dark text-light my-2">Login</button>
+                  <button
+                    className="btn btn-dark text-light my-2"
+                    onClick={handleLogin}
+                  >
+                    Login
+                  </button>
                   <p className="text-light">
                     Don't have a Account?Click here..
                     <Link to={"/register"} style={{ textDecoration: "none" }}>

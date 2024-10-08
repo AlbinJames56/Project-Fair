@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../services/allAPI";
+import { Bounce, Flip, ToastContainer, toast } from 'react-toastify';
+
 function Auth({ register }) {
   const isRegisterForm = register ? true : false;
   const navigate = useNavigate();
@@ -16,7 +18,17 @@ function Auth({ register }) {
     e.preventDefault();
     const { email, password } = userData;
     if (!email || !password) {
-      alert("Please fill all fileds");
+      toast.info('Please fill all fields!', {
+        position: "top-center",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition:Flip
+        })
     } else {
       try {
         const result = await loginAPI({ email, password });
@@ -27,7 +39,7 @@ function Auth({ register }) {
           navigate("/");
           setUserData({ email: "", password: "" });
         } else {
-          alert(result.response.data);
+          toast.warning(result.response.data);
         }
       } catch (err) {
         console.log(err);
@@ -39,7 +51,7 @@ function Auth({ register }) {
     e.preventDefault();
     const { username, email, password } = userData;
     if (!username || !email || !password) {
-      alert("Please fill all fileds");
+      toast.info("Please fill all fileds");
     } else {
       // api calling
       try {
@@ -47,11 +59,11 @@ function Auth({ register }) {
         console.log(result);
 
         if (result.status === 200) {
-          alert(`${result.data.username} has successfully registered`);
+          toast.success(`${result.data.username} has successfully registered`);
           navigate("/login");
           setUserData({ username: "", email: "", password: "" });
         } else {
-          alert(result.response.data);
+          toast.warning(result.response.data);
         }
       } catch (err) {
         console.log(err);
@@ -172,6 +184,7 @@ function Auth({ register }) {
           </div>
         </div>
       </div>
+      <ToastContainer position="top-center" autoClose={3000} theme="dark" transition={Bounce}/>
     </div>
   );
 }

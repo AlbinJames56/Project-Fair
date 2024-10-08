@@ -6,7 +6,7 @@ import Auth from './Pages/Auth'
 import Projects from './Pages/Projects' 
 import Home from './Pages/Home'
 import DashBoard from './Pages/DashBoard'
-
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
    
   return (

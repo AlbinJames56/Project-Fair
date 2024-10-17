@@ -1,12 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import gallery from "../assets/Images/gallery.png";
+import { toast } from "react-toastify";
+import { addProjectAPI } from "../services/allAPI";
 function AddProject() {
   const [show, setShow] = useState(false);
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setProjectData({
+      title: "",
+      languages: "",
+      github: "",
+      website: "",
+      overview: "",
+      projectImg: "",
+    });
+    setPreview("");
+  };
   const handleShow = () => setShow(true);
-  const [fileStatus, setFileStatus] = useState(false);
+  const [fileStatus, setFileStatus] = useState(true);
   const [projectData, setProjectData] = useState({
     title: "",
     languages: "",
@@ -15,27 +28,71 @@ function AddProject() {
     overview: "",
     projectImg: "",
   });
-  const[preview,setPreview]=useState("")
-  
+  const [preview, setPreview] = useState("");
+
   useEffect(() => {
- 
-    const imgPath = projectData.projectImg.type;
+    const imgPath = projectData.projectImg?.type;
     if (
       imgPath == "image/jpg" ||
       imgPath == "image/png" ||
       imgPath == "image/jpeg"
     ) {
-      console.log("generate url");
-      setPreview(URL.createObjectURL(projectData.projectImg))
+      // console.log("generate url");
+      setPreview(URL.createObjectURL(projectData.projectImg));
       setFileStatus(false);
     } else {
       console.log("Please upload the following file extensions (jpeg/png/jpg)");
       setFileStatus(true);
-      setPreview({ ...projectData, projectImg: "" });
+      setPreview("");
     }
   }, [projectData.projectImg]);
-console.log(preview);
+  // console.log(preview);
+  const handleAddProjectData = async () => {
+    const { title, languages, github, website, overview, projectImg } =
+      projectData;
+    if (
+      !title ||
+      !languages ||
+      !github ||
+      !website ||
+      !overview ||
+      !projectImg
+    ) {
+      toast.info("Please Fill the missing fields");
+    } else {
+      // api call(req body)
+      const reqBody = new FormData();
+      reqBody.append("title", title);
+      reqBody.append("languages", languages);
+      reqBody.append("github", github);
+      reqBody.append("website", website);
+      reqBody.append("overview", overview);
+      reqBody.append("projectImg", projectImg);
 
+      //api call (reqHeader)
+      const token = sessionStorage.getItem("token");
+      console.log("token", token);
+      if (token) {
+        const reqHeader = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        };
+        // api call
+        try {
+          const result = await addProjectAPI(reqBody, reqHeader);
+          console.log("result", result);
+
+          if (result.status == 200) {
+            handleClose();
+          } else {
+            console.log(result.response.data);
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    }
+  };
   return (
     <div>
       <button className="btn btn-primary" onClick={handleShow}>
@@ -59,13 +116,13 @@ console.log(preview);
                     })
                   }
                 />
-                <img width={"100%"} src={!fileStatus?preview:gallery} alt="" />
+                <img width={"100%"} src={preview ? preview : gallery} alt="" />
               </label>
-              {fileStatus && 
+              {fileStatus && (
                 <div className="mt-3 text-danger">
                   Please upload the following file extensions (jpeg/png/jpg)
                 </div>
-              }
+              )}
             </div>
             <div className="col-7">
               <div className="mb-3">
@@ -76,6 +133,7 @@ console.log(preview);
                   onChange={(e) =>
                     setProjectData({ ...projectData, title: e.target.value })
                   }
+                  value={projectData.title}
                 />
               </div>
               <div className="mb-3">
@@ -84,8 +142,12 @@ console.log(preview);
                   className="form-control"
                   placeholder="Languages Used"
                   onChange={(e) =>
-                    setProjectData({ ...projectData, languages: e.target.value })
+                    setProjectData({
+                      ...projectData,
+                      languages: e.target.value,
+                    })
                   }
+                  value={projectData.languages}
                 />
               </div>
               <div className="mb-3">
@@ -96,6 +158,7 @@ console.log(preview);
                   onChange={(e) =>
                     setProjectData({ ...projectData, github: e.target.value })
                   }
+                  value={projectData.github}
                 />
               </div>
               <div className="mb-3">
@@ -106,6 +169,7 @@ console.log(preview);
                   onChange={(e) =>
                     setProjectData({ ...projectData, website: e.target.value })
                   }
+                  value={projectData.website}
                 />
               </div>
               <div className="mb-3">
@@ -116,6 +180,7 @@ console.log(preview);
                   onChange={(e) =>
                     setProjectData({ ...projectData, overview: e.target.value })
                   }
+                  value={projectData.overview}
                 />
               </div>
             </div>
@@ -125,7 +190,7 @@ console.log(preview);
           <Button variant="secondary" onClick={handleClose}>
             Cancel
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleAddProjectData}>
             Save Changes
           </Button>
         </Modal.Footer>

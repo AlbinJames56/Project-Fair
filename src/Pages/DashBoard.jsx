@@ -10,7 +10,7 @@ function DashBoard() {
       <Row className="p-5">
         <Col sm={12} md={8}  >
           <h2>
-            Welcome <span className="text-warning fa-bolder">User</span>
+            Welcome <span className="text-warning fa-bolder">{sessionStorage.getItem("username")||"User"}</span>
           </h2>
           <MyProjects />
         </Col>

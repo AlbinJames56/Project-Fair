@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../services/allAPI";
-import { Bounce, Flip, ToastContainer, toast } from 'react-toastify';
+import {  Flip, ToastContainer, toast } from 'react-toastify';
 
 function Auth({ register }) {
   const isRegisterForm = register ? true : false;
@@ -184,7 +184,7 @@ function Auth({ register }) {
           </div>
         </div>
       </div>
-      <ToastContainer position="top-center" autoClose={3000} theme="dark" transition={Bounce}/>
+      
     </div>
   );
 }

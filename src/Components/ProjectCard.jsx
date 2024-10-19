@@ -1,43 +1,39 @@
-import React, { useState } from "react";
-import projectImg from "../assets/Images/boyImg.webp";
+import React, { useState } from "react"; 
 import {  Card, Col, Modal, Row } from "react-bootstrap";
+import { SERVER_URL } from "../services/serverUrl";
 
-function ProjectCard() {
+function ProjectCard({project}) {
   const [show, setShow] = useState(false);
-
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const handleShow = () => setShow(true); 
+  console.log(`${SERVER_URL}/uploads/${project?.projectImg}`);
   return (
     <div className="mt-5">
       <Card style={{ width: "18rem" }}>
-        <Card.Img variant="top" src={projectImg} onClick={handleShow} />
+        <Card.Img variant="top" src={`${SERVER_URL}/uploads/${project?.projectImg}`} onClick={handleShow} />
         <Card.Body>
-          <Card.Title>Project Title</Card.Title>
+          <Card.Title className="text-dark">{project.title}</Card.Title>
         </Card.Body>
       </Card>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title> {project.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row>
             <Col md={6}>
-              <img width={"100%"} src={projectImg} alt="" className="'image-fluid" />
+              <img width={"100%"} src={`${SERVER_URL}/uploads/${project?.projectImg}`} alt="" className="'image-fluid" />
             </Col>
             <Col md={6}>
               {/* <h2>Project Title</h2> */}
               <p>
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit.
-                Officia sapiente sequi quisquam, error aspernatur illum natus
-                eligendi voluptate eum atque numquam vitae similique et facilis
-                dolorum nesciunt est asperiores minima? Accusantium ex autem
-                tempora repudiandae nesciunt.{" "}
+              {project.overview}
               </p>
               <p>
-                Languages Used:{" "}
+                Languages Used: 
                 <span className="text-danger">
-                  HTML, CSS, Bootstrap, React, Javascript
+                 {project.languages}
                 </span>
               </p>
             </Col>

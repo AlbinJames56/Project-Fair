@@ -1,20 +1,32 @@
 import React, { useEffect, useState } from "react";
-import {Col, Row } from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import titleImage from "../assets/Images/cat.gif";
 import ProjectCard from "../Components/ProjectCard";
 import { Link, useNavigate } from "react-router-dom";
+import { getHomeProjectsAPI } from "../services/allAPI";
 function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const navigate=useNavigate()
-  const handleProjectsPage=()=>{
-    if(sessionStorage.getItem("token")){
-      navigate('/project')
-    }else{
-      alert('please login')
+  const [projects, setProjects] = useState([]);
+  const navigate = useNavigate();
+  const handleProjectsPage = () => {
+    if (sessionStorage.getItem("token")) {
+      navigate("/project");
+    } else {
+      alert("please login");
     }
-  }
+  };
+  const getHomeProject = async () => {
+    const result = await getHomeProjectsAPI();
+    if (result.status == 200) {
+      setProjects(result.data);
+    } else {
+      setProjects([]);
+    }
+  };
+  console.log(projects);
 
   useEffect(() => {
+    getHomeProject();
     if (sessionStorage.getItem("token")) {
       setLoggedIn(true);
     }
@@ -53,21 +65,19 @@ function Home() {
         <h1 className="text-center text-primary">Explore Your Projects</h1>{" "}
         <marquee scrollamount="15">
           <Row>
-            <Col sm={12} md={6} lg={4}>
-              <ProjectCard />
-            </Col>
-            <Col sm={12} md={6} lg={4}>
-              <ProjectCard />
-            </Col>
-            <Col sm={12} md={6} lg={4}>
-              <ProjectCard />
-            </Col>
+            {projects.length > 0 ? 
+              projects.map((project, index) => (
+                <Col key={index} sm={12} md={6} lg={4}>
+                  <ProjectCard project={project} />
+                </Col>
+              )
+            ) :  null
+            }
           </Row>
         </marquee>
       </div>
       <div className="text-center mt-5">
-        <button  className="btn btn-success" onClick={handleProjectsPage}
-        >
+        <button className="btn btn-success" onClick={handleProjectsPage}>
           View More Projects
         </button>
       </div>

@@ -1,8 +1,37 @@
-import React from "react";
+import React, { useEffect ,useState} from "react";
 import Header from "../Components/Header";
 import { Col, Row } from "react-bootstrap";
 import ProjectCard from "../Components/ProjectCard";
+import { getAllProjectsAPI } from "../services/allAPI";
 function Projects() {
+  const [projects,setProjects]=useState([]);
+  const getAllProjects=async ()=>{
+    const token=sessionStorage.getItem("token")
+    console.log(token);
+    
+    if(token){
+      const reqHeader={
+        "authorization":`Bearer ${token}`,
+        "Content-Type":"multipart/form-data"
+      }
+      // api call
+      const result=await getAllProjectsAPI(reqHeader);
+      // console.log(result);
+      
+      if(result.status===200){
+        setProjects(result.data)
+      }else{
+        console.log(result);
+        
+      }
+    }
+  }
+  // console.log(projects);
+  useEffect(()=>{
+    getAllProjects()
+  },[])
+  
+
   return (
     <div>
       <Header />
@@ -22,9 +51,15 @@ function Projects() {
           </div>
         </div>
         <Row className="m-5 container">
-          <Col sm={12} md={6} lg={4}>
-          <ProjectCard/>
+
+          {
+            projects.length>0?projects.map((project,index)=>(
+              <Col key={index} sm={12} md={6} lg={4}>
+        <ProjectCard project={project} />
           </Col>
+            )):<p className="text-danger"> Nothing to Display</p>
+            
+        }
         </Row>
       </div>
 

@@ -12,13 +12,13 @@ function ProjectCard({project}) {
       <Card style={{ width: "18rem" }}>
         <Card.Img variant="top" src={`${SERVER_URL}/uploads/${project?.projectImg}`} onClick={handleShow} />
         <Card.Body>
-          <Card.Title className="text-dark">{project.title}</Card.Title>
+          <Card.Title className="text-dark">{project?.title}</Card.Title>
         </Card.Body>
       </Card>
 
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title> {project.title}</Modal.Title>
+          <Modal.Title> {project?.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Row>
@@ -28,12 +28,12 @@ function ProjectCard({project}) {
             <Col md={6}>
               {/* <h2>Project Title</h2> */}
               <p>
-              {project.overview}
+              {project?.overview}
               </p>
               <p>
                 Languages Used: 
                 <span className="text-danger">
-                 {project.languages}
+                 {project?.languages}
                 </span>
               </p>
             </Col>

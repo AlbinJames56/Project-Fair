@@ -10,7 +10,7 @@ function Home() {
   const navigate = useNavigate();
   const handleProjectsPage = () => {
     if (sessionStorage.getItem("token")) {
-      navigate("/project");
+      navigate("/projects");
     } else {
       alert("please login");
     }

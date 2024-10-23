@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Modal } from "react-bootstrap";
 import gallery from "../assets/Images/gallery.png";
 import { toast } from "react-toastify";
 import { addProjectAPI } from "../services/allAPI";
+import { addProjectContextResponse } from "../ContextAPI/ContextShare";
 function AddProject() {
   const [show, setShow] = useState(false);
-
+ const { addProjectResponse, setAddProjectResponse}=useContext(addProjectContextResponse)
   const handleClose = () => {
     setShow(false);
     setProjectData({
@@ -74,15 +75,16 @@ function AddProject() {
       console.log("token", token);
       if (token) {
         const reqHeader = {
-          Authorization: `Bearer ${token}`,
+          "authorization": `Bearer ${token}`,
           "Content-Type": "multipart/form-data",
         };
         // api call
         try {
           const result = await addProjectAPI(reqBody, reqHeader);
-          console.log("result", result);
-
+          // console.log("result", result);
+          
           if (result.status == 200) {
+            setAddProjectResponse(result.data)
             handleClose();
           } else {
             console.log(result.response.data);

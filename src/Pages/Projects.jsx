@@ -8,7 +8,6 @@ function Projects() {
   const getAllProjects=async ()=>{
     const token=sessionStorage.getItem("token")
     console.log(token);
-    
     if(token){
       const reqHeader={
         "authorization":`Bearer ${token}`,
@@ -16,21 +15,18 @@ function Projects() {
       }
       // api call
       const result=await getAllProjectsAPI(reqHeader);
-      // console.log(result);
-      
+      console.log("result:", result);
       if(result.status===200){
         setProjects(result.data)
       }else{
         console.log(result);
-        
       }
     }
   }
-  // console.log(projects);
+  console.log("projects:",projects);
   useEffect(()=>{
     getAllProjects()
   },[])
-  
 
   return (
     <div>

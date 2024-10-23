@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "../Components/Header";
 import { Col, Row } from "react-bootstrap";
 import MyProjects from "../Components/MyProjects";
 import Profile from "../Components/Profile";
-function DashBoard() {
+function DashBoard() { 
   return (
     <div>
       <Header />

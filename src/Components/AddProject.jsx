@@ -193,7 +193,7 @@ function AddProject() {
             Cancel
           </Button>
           <Button variant="primary" onClick={handleAddProjectData}>
-            Save Changes
+            Add
           </Button>
         </Modal.Footer>
       </Modal>

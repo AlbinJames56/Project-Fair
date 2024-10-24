@@ -2,9 +2,12 @@ import React, { useContext, useEffect, useState } from "react";
 import AddProject from "./AddProject";
 import { getUserProjectsAPI } from "../services/allAPI";
 import { addProjectContextResponse } from "../ContextAPI/ContextShare";
+import EditProject from "./EditProject";
 
 function MyProjects() {
-  const { addProjectResponse, setAddProjectResponse}=useContext(addProjectContextResponse)
+  const { addProjectResponse, setAddProjectResponse } = useContext(
+    addProjectContextResponse
+  );
   const [projects, setProjects] = useState();
   const getUserProject = async () => {
     const token = sessionStorage.getItem("token");
@@ -42,12 +45,12 @@ function MyProjects() {
             <div className="border d-flex align-items-center-rounded p-3">
               <h3>{project?.title}</h3>
               <div className="d-flex ms-auto">
-                <button className="btn text-dark">
-                  <i className="fa-solid fa-pen-to-square"></i>
+                <div className="btn text-dark">
+                  <EditProject project={project}/>
+                </div>
+                <button className=" btn text-dark">
+                  <i className="fa-brands fa-github"> </i>
                 </button>
-                <a className="me-3 btn text-dark">
-                  <i className="fa-brands fa-github">{project?.github}</i>
-                </a>
                 <button className="btn text-dark">
                   <i className="fa-solid fa-solid fa-trash"></i>
                 </button>

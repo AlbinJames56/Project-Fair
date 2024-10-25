@@ -72,7 +72,7 @@ function AddProject() {
 
       //api call (reqHeader)
       const token = sessionStorage.getItem("token");
-      console.log("token", token);
+      // console.log("token", token);
       if (token) {
         const reqHeader = {
           "authorization": `Bearer ${token}`,

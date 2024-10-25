@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Toast } from "react-bootstrap";
 import gallery from "../assets/Images/gallery.png";
 import { SERVER_URL } from "../services/serverUrl";
+import { editProjectAPI } from "../services/allAPI";
+import { toast, ToastContainer } from "react-toastify";
+ 
 
 function EditProject({project}) {
     const [projectData, setProjectData] = useState({...project,projectImg:""});
@@ -14,9 +17,51 @@ function EditProject({project}) {
     setProjectData({...project,projectImg:""});
     setPreview(projectData.projectImg);
   };
-  const handleUpdateProjectData=()=>{
+  const handleUpdateProjectData=async()=>{
+    const { title, languages, github, website, overview, projectImg } =
+    projectData;
+  if (
+    !title ||
+    !languages ||
+    !github ||
+    !website ||
+    !overview  
+  ) {
+    toast.info("Please Fill the missing fields");
+  } else {
+    // api call(req body)
+    const reqBody = new FormData();
+    reqBody.append("title", title);
+    reqBody.append("languages", languages);
+    reqBody.append("github", github);
+    reqBody.append("website", website);
+    reqBody.append("overview", overview);
+    preview?reqBody.append("projectImg", projectImg):reqBody.append("projectImg",project.projectImg)
 
+    //api call (reqHeader)
+    const token = sessionStorage.getItem("token");
+    console.log(token);
+
+    if(token){
+      const reqHeader = {
+        "authorization": `Bearer ${token}`,
+        "Content-Type":preview? "multipart/form-data":"application/json"
+      };
+      try{
+        const result=await editProjectAPI(project._id, reqBody,reqHeader)
+        if(result.status==200){
+          handleClose() 
+        }else{
+          toast.warn(result.message)
+        }
+      }catch(err){
+        console.log(err);
+        
+      }
+    }
+    
   }
+}
   useEffect(() => {
     if(projectData.projectImg){
       setPreview(URL.createObjectURL(projectData.projectImg))

@@ -3,6 +3,15 @@ import { Collapse } from "react-bootstrap";
 import profileImg from '../assets/Images/boyImg.webp'
 function Profile() {
   const [open, setOpen] = useState(false);
+  const [profile,setProfile]=useState({
+       profileImg:"", 
+       github:"",
+       linkedin:""
+
+  })
+  const handleUpdate=()=>{
+
+  }
   return (
     <div>
       <div className="card shadow p-5 mt-3 me-2">
@@ -26,12 +35,12 @@ function Profile() {
             <img width={'200px'}   src={profileImg} alt="profile" />
           </label>
           <div className="mt-3">
-            <input type="text" placeholder="Github Link" className="form-control" name="" id="" />
+            <input type="text" placeholder="Github Link" className="form-control" value={profile.github}/>
             <br />
-            <input type="text" placeholder="LinkedIn Link" className="form-control" name="" id="" />
+            <input type="text" placeholder="LinkedIn Link" className="form-control" value={profile.linkedin}/>
           </div>
           <div className="d-grid mt-2">
-            <button className="btn btn-warning">Update</button>
+            <button className="btn btn-warning" onClick={()=>handleUpdate()}>Update</button>
           </div>
         </div>
       </Collapse>

@@ -6,7 +6,7 @@ function ProjectCard({project}) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true); 
-  console.log(`${SERVER_URL}/uploads/${project?.projectImg}`);
+  // console.log(`${SERVER_URL}/uploads/${project?.projectImg}`);
   return (
     <div className="mt-5">
       <Card style={{ width: "18rem" }}>

@@ -5,28 +5,27 @@ import ProjectCard from "../Components/ProjectCard";
 import { getAllProjectsAPI } from "../services/allAPI";
 function Projects() {
   const [projects,setProjects]=useState([]);
+  const [searchKey,setSearchKey]=useState("")
   const getAllProjects=async ()=>{
-    const token=sessionStorage.getItem("token")
-    console.log(token);
+    const token=sessionStorage.getItem("token") 
     if(token){
       const reqHeader={
         "authorization":`Bearer ${token}`,
         "Content-Type":"multipart/form-data"
       }
       // api call
-      const result=await getAllProjectsAPI(reqHeader);
-      console.log("result:", result);
+      const result=await getAllProjectsAPI(searchKey,reqHeader);
+      // console.log("result:", result);
       if(result.status===200){
         setProjects(result.data)
       }else{
         console.log(result);
       }
     }
-  }
-  console.log("projects:",projects);
+  } 
   useEffect(()=>{
     getAllProjects()
-  },[])
+  },[searchKey])
 
   return (
     <div>
@@ -38,7 +37,7 @@ function Projects() {
             <input
               type="text"
               className="form-control"
-              placeholder="search by technologies"
+              placeholder="search by technologies" onChange={e=>setSearchKey(e.target.value)}
             />
             <i
               style={{ marginLeft: "-50px" }}

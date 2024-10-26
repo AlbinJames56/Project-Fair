@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Button, Modal, Toast } from "react-bootstrap";
 import gallery from "../assets/Images/gallery.png";
 import { SERVER_URL } from "../services/serverUrl";
 import { editProjectAPI } from "../services/allAPI";
 import { toast, ToastContainer } from "react-toastify";
+import { editProjectContextResponse } from "../ContextAPI/ContextShare";
  
 
 function EditProject({project}) {
@@ -11,10 +12,11 @@ function EditProject({project}) {
   const [fileStatus, setFileStatus] = useState(true);
   const [preview, setPreview] = useState("");
   const [show, setShow] = useState(false);
+  const {editProjectResponse,setProjectResponse}=useContext(editProjectContextResponse)
   const handleShow = () => setShow(true);
   const handleClose = () => {
     setShow(false);
-    setProjectData({...project,projectImg:""});
+    
     setPreview(projectData.projectImg);
   };
   const handleUpdateProjectData=async()=>{
@@ -50,6 +52,8 @@ function EditProject({project}) {
       try{
         const result=await editProjectAPI(project._id, reqBody,reqHeader)
         if(result.status==200){
+          setProjectResponse(result.data)
+
           handleClose() 
         }else{
           toast.warn(result.message)
@@ -62,6 +66,7 @@ function EditProject({project}) {
     
   }
 }
+
   useEffect(() => {
     if(projectData.projectImg){
       setPreview(URL.createObjectURL(projectData.projectImg))
@@ -69,7 +74,7 @@ function EditProject({project}) {
     }else{
       setPreview("")
     }
-  }, [projectData.projectImg]);
+  }, [projectData.projectImg ]);
 
   return (
     <div>

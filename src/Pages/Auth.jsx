@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../services/allAPI";
 import {  Flip, ToastContainer, toast } from 'react-toastify';
+import { TokenAuthContext } from "../ContextAPI/TokenAuth";
 
 function Auth({ register }) {
+  const {isAuthorized,setIsAuthorized}=useContext(TokenAuthContext)
   const isRegisterForm = register ? true : false;
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
@@ -37,6 +39,7 @@ function Auth({ register }) {
           sessionStorage.setItem("username", result.data.existingUser.username);
           sessionStorage.setItem("token", result.data.token);
           navigate("/");
+          setIsAuthorized(true)
           setUserData({ email: "", password: "" });
         } else {
           toast.warning(result.response.data);

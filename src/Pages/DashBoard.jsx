@@ -6,7 +6,7 @@ import Profile from "../Components/Profile";
 function DashBoard() { 
   return (
     <div>
-      <Header />
+      <Header insideDashboard/>
       <Row className="p-5">
         <Col sm={12} md={8}  >
           <h2>

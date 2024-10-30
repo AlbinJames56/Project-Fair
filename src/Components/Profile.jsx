@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Collapse } from "react-bootstrap";
 import sampleImg from "../assets/Images/boyImg.webp";
 import { toast } from "react-toastify";
-import { GetProfileAPI,  UpdateProfileAPI } from "../services/allAPI";
+import { GetProfileAPI, UpdateProfileAPI } from "../services/allAPI";
+import { SERVER_URL } from "../services/serverUrl";
 function Profile() {
   const [open, setOpen] = useState(false);
   const [currentProfile, setCurrentProfile] = useState({
@@ -24,13 +25,14 @@ function Profile() {
 
   // setting image url
   useEffect(() => {
-    if (!profile.profileImg) {
+    if (profile.profileImg instanceof File) {
+      const objectUrl = URL.createObjectURL(profile.profileImg);
+      setPreview(objectUrl);
+      return () => URL.revokeObjectURL(objectUrl); // Clean up URL object
+    } else {  
       setPreview("");
-      setProfile({ ...profile, profileImg: "" });
-    } else {
-      setPreview(URL.createObjectURL(profile.profileImg));
     }
-  }, [profile.profileImg]);
+  }, [profile.profileImg, currentProfile.profileImg]);
 
   // console.log(preview);
 
@@ -82,7 +84,7 @@ function Profile() {
       try {
         const result = await GetProfileAPI(reqHeader);
 
-        // console.log("get profile api:", result);
+        console.log("get profile api:", result);
         if (result.status == 200) {
           setCurrentProfile({
             ...currentProfile,
@@ -92,13 +94,14 @@ function Profile() {
             github: result.data.github,
             profileImg: result.data.profileImg,
           });
+          console.log(currentProfile.profileImg);
         }
       } catch (err) {
         console.log(err);
       }
     }
   };
-  
+
   useEffect(() => {
     getProfile();
   }, []);
@@ -109,8 +112,9 @@ function Profile() {
       username: currentProfile.username,
       email: currentProfile.email,
       linkedin: currentProfile.linkedin,
-      github: currentProfile.github,
-    });
+      github: currentProfile.github, 
+    }); 
+    
   }, [currentProfile]);
 
   return (
@@ -141,12 +145,11 @@ function Profile() {
             />
             <img
               width={"200px"}
-              src={
-                preview
-                  ? preview
-                  : currentProfile.profileImg
-                  ? currentProfile.profileImg
-                  : sampleImg
+              src={preview
+                ? preview
+                : currentProfile.profileImg
+                ? `${SERVER_URL}/uploads/${currentProfile.profileImg}`
+                : sampleImg
               }
               alt="profile"
             />

@@ -23,7 +23,7 @@ function Home() {
       setProjects([]);
     }
   };
-  console.log(projects);
+  // console.log(projects);
 
   useEffect(() => {
     getHomeProject();

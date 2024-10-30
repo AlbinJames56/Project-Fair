@@ -2,11 +2,11 @@ import React, { useContext, useState } from "react";
 import { Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { loginAPI, registerAPI } from "../services/allAPI";
-import {  Flip, ToastContainer, toast } from 'react-toastify';
+import { Flip, ToastContainer, toast } from "react-toastify";
 import { TokenAuthContext } from "../ContextAPI/TokenAuth";
 
 function Auth({ register }) {
-  const {isAuthorized,setIsAuthorized}=useContext(TokenAuthContext)
+  const { isAuthorized, setIsAuthorized } = useContext(TokenAuthContext);
   const isRegisterForm = register ? true : false;
   const navigate = useNavigate();
   const [userData, setUserData] = useState({
@@ -20,7 +20,7 @@ function Auth({ register }) {
     e.preventDefault();
     const { email, password } = userData;
     if (!email || !password) {
-      toast.info('Please fill all fields!', {
+      toast.info("Please fill all fields!", {
         position: "top-center",
         autoClose: 2000,
         hideProgressBar: false,
@@ -29,17 +29,18 @@ function Auth({ register }) {
         draggable: true,
         progress: undefined,
         theme: "colored",
-        transition:Flip
-        })
+        transition: Flip,
+      });
     } else {
       try {
         const result = await loginAPI({ email, password });
         console.log(result);
         if (result.status === 200) {
           sessionStorage.setItem("username", result.data.existingUser.username);
+         
           sessionStorage.setItem("token", result.data.token);
           navigate("/");
-          setIsAuthorized(true)
+          setIsAuthorized(true);
           setUserData({ email: "", password: "" });
         } else {
           toast.warning(result.response.data);
@@ -187,7 +188,6 @@ function Auth({ register }) {
           </div>
         </div>
       </div>
-      
     </div>
   );
 }

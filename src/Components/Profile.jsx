@@ -29,7 +29,7 @@ function Profile() {
       const objectUrl = URL.createObjectURL(profile.profileImg);
       setPreview(objectUrl);
       return () => URL.revokeObjectURL(objectUrl); // Clean up URL object
-    } else {  
+    } else {
       setPreview("");
     }
   }, [profile.profileImg, currentProfile.profileImg]);
@@ -39,8 +39,11 @@ function Profile() {
   // function to update profile
   const handleUpdate = async () => {
     const { profileImg, github, linkedin } = profile;
-    if (!github || !linkedin) {
-      toast.warn("Please fill all fileds");
+    if (
+      github == currentProfile.github &&
+      linkedin == currentProfile.linkedin && profileImg==preview
+    ) {
+      toast.warn("Noting to update");
     } else {
       const reqBody = new FormData();
       reqBody.append("profileImg", profileImg);
@@ -112,9 +115,8 @@ function Profile() {
       username: currentProfile.username,
       email: currentProfile.email,
       linkedin: currentProfile.linkedin,
-      github: currentProfile.github, 
-    }); 
-    
+      github: currentProfile.github,
+    });
   }, [currentProfile]);
 
   return (
@@ -137,7 +139,7 @@ function Profile() {
           <label className="d-flex justify-content-center mt-3">
             <input
               type="file"
-              accept="/*"
+              accept=".jpg,,png ,.jpeg"
               style={{ display: "none" }}
               onChange={(e) =>
                 setProfile({ ...profile, profileImg: e.target.files[0] })
@@ -145,11 +147,12 @@ function Profile() {
             />
             <img
               width={"200px"}
-              src={preview
-                ? preview
-                : currentProfile.profileImg
-                ? `${SERVER_URL}/uploads/${currentProfile.profileImg}`
-                : sampleImg
+              src={
+                preview
+                  ? preview
+                  : currentProfile.profileImg
+                  ? `${SERVER_URL}/uploads/${currentProfile.profileImg}`
+                  : sampleImg
               }
               alt="profile"
             />
